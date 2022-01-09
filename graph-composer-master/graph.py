@@ -1,5 +1,6 @@
 import random
 
+
 class Vertex(object):
     def __init__(self, word):
         self.word = word
@@ -8,7 +9,7 @@ class Vertex(object):
         self.neighbors_weights = []
 
     def __str__(self):
-        return self.value + ' '.join([node.value for node in self.adjacent.keys()])
+        return self.word + ' '.join([node.value for node in self.adjacent.keys()])
 
     # adds an edge to the vertex we input with weight
     def add_edge_to(self, vertex, weight=0):
@@ -30,8 +31,10 @@ class Vertex(object):
     def next_word(self):
         # chooses randomly based on weights
         # will want to change
+        print(self.word)
+        print(len(self.neighbors))
+        print(len(self.neighbors_weights))
         return random.choices(self.neighbors, weights=self.neighbors_weights)[0]
-
 
 
 class Graph(object):
