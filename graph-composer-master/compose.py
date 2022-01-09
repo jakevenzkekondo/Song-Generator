@@ -5,19 +5,22 @@ import os
 from graph import Graph
 import lyrics
 
+SONG_LENGTH = 200
+
 
 def get_words_from_text(text_path):
     with open(text_path, 'rb') as file:
         text = file.read().decode("utf-8")
-
         text = re.sub(r'\[(.+)\]', ' ', text)
 
-    # turns the text into all lowercase separated by only spaces
-    text = ' '.join(text.split())
+    # gets rid of punctuation and makes lowercase
+    text = text.replace('\r', '')
+    text = text.replace('\n', ' \n ')
     text = text.lower()
     text = text.translate(str.maketrans('', '', string.punctuation))
+    words = list(filter(bool, text.split(' ')))
 
-    words = text.split()
+    print(words)
     words = words[:1000]
 
     return words
@@ -36,20 +39,28 @@ def make_graph(words):
         if prev_word:  # prev word should be a Vertex
             # check if edge exists from previous word to current word
             prev_word.increment_edge(word_vertex)
-
         prev_word = word_vertex
-
     g.generate_probability_mappings()
 
     return g
 
 
-def compose(g, words, length=50):
+def compose(g, words, length):
     composition = []
-    word = g.get_vertex(random.choice(words))
+    curr_word = g.get_vertex(random.choice(words))
+
+    while len(curr_word.neighbors) == 0:
+        curr_word = g.get_vertex(random.choice(words))
+
     for _ in range(length):
-        composition.append(word.word)
-        word = g.get_next_word(word)
+        composition.append(curr_word.word)
+        curr_word = g.get_next_word(curr_word)
+        while len(curr_word.neighbors) == 0:
+            curr_word = g.get_vertex(random.choice(words))
+
+    for i in range(length - 1):
+        if composition[i] == '\n':
+            composition[i+1].capitalize()
 
     return composition
 
@@ -66,10 +77,9 @@ def main():
         words.extend(get_words_from_text('songs/{artist}/{song}'.format(artist=artist, song=song)))
 
     g = make_graph(words)
-    composition = compose(g, words, 100)
+    composition = compose(g, words, SONG_LENGTH)
     print(' '.join(composition))
 
 
 if __name__ == '__main__':
     main()
-
