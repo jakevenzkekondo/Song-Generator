@@ -20,9 +20,7 @@ def get_words_from_text(text_path):
     text = text.translate(str.maketrans('', '', string.punctuation))
     words = list(filter(bool, text.split(' ')))
 
-    print(words)
     words = words[:1000]
-
     return words
 
 
@@ -49,7 +47,8 @@ def compose(g, words, length):
     composition = []
     curr_word = g.get_vertex(random.choice(words))
 
-    while len(curr_word.neighbors) == 0:
+    # we don't want the initial seed word to be the last lyric or a newline
+    while len(curr_word.neighbors) == 0 or curr_word == '\n':
         curr_word = g.get_vertex(random.choice(words))
 
     for _ in range(length):
@@ -58,27 +57,42 @@ def compose(g, words, length):
         while len(curr_word.neighbors) == 0:
             curr_word = g.get_vertex(random.choice(words))
 
+    # capitalizes lyrics
+    composition[0] = composition[0].capitalize()
     for i in range(length - 1):
         if composition[i] == '\n':
-            composition[i+1].capitalize()
+            composition[i+1] = composition[i+1].capitalize()
+        elif composition[i] == 'i':
+            composition[i] = composition[i].capitalize()
 
     return composition
 
 
 def main():
-    artist = input("Enter artist name: ")
-    songs = input("Enter song names separated by comma: ").split(", ")
-    lyrics.save_lyrics(songs, artist)
-    words = []
+    print("If you wish to quit the program, enter QUIT for artist name.")
 
-    for song in os.listdir('songs/{}'.format(artist)):
-        if song == '.DS_Store':
-            continue
-        words.extend(get_words_from_text('songs/{artist}/{song}'.format(artist=artist, song=song)))
+    while True:
+        artist = input("Enter artist name: ")
+        if artist == 'QUIT':
+            exit()
+        songs = input("Enter song names separated by comma: ").split(", ")
+        lyrics.save_lyrics(songs, artist)
+        words = []
 
-    g = make_graph(words)
-    composition = compose(g, words, SONG_LENGTH)
-    print(' '.join(composition))
+        for song in os.listdir('songs/{}'.format(artist)):
+            if song == '.DS_Store':
+                continue
+            words.extend(get_words_from_text('songs/{artist}/{song}'.format(artist=artist, song=song)))
+
+        g = make_graph(words)
+        composition = compose(g, words, SONG_LENGTH)
+        print()
+        print("Generated song:")
+
+        # removes unicode characters that cannot be printed
+        generated_song = ' ' + ' '.join(composition)
+        generated_song = generated_song.encode("ascii", "ignore")
+        print(generated_song.decode())
 
 
 if __name__ == '__main__':
