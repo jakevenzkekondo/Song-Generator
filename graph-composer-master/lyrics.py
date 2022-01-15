@@ -35,5 +35,3 @@ def save_lyrics(songs, artist_name):
                     f.write(line)
         else:
             print(songs[i] + " by " + artist_name + " cannot be found\n")
-            print("Please try again")
-            exit()
