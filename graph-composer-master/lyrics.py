@@ -1,24 +1,26 @@
 import lyricsgenius
 import os
 
-# TODO:
-# get rid of the "EmbedShare" token at the end of the lyrics file
 
 # generate an api key and paste it
 # https://genius.com/api-clients
 genius = lyricsgenius.Genius("api-key-here")
 
+
 def save_lyrics(songs, artist_name):
     parent_dir = "./songs/"
     path = os.path.join(parent_dir, artist_name)
-    os.mkdir(path)
+    try:
+        os.mkdir(path)
+    except FileExistsError:
+        print(artist_name + " was already used")
 
     for i in range(len(songs)):
         song_title = songs[i]
         try:
             song = genius.search_song(song_title, artist_name)
-        except TimeoutError:
-            print("API failed to find lyrics")
+        except Exception:
+            print("Lyrics Genius API failed to find lyrics")
             exit()
 
         if song is not None:
@@ -30,7 +32,6 @@ def save_lyrics(songs, artist_name):
                 for line in lines:
                     line = line.replace("EmbedShare", "")
                     line = line.replace("URLCopyEmbedCopy", "")
-                    line = line.replace(" ", " ")
                     f.write(line)
         else:
             print(songs[i] + " by " + artist_name + " cannot be found\n")
