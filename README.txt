@@ -9,8 +9,8 @@ will be considered as well as the previous ones you entered.
 
 You can exit the program by typing in QUIT when prompted for the artist name.
 
-If the Genius Lyrics API is unable to find the requested song by the artist, the program will notify you and
-quit.
+If the Genius Lyrics API is unable to find a requested song by the artist, the program will notify you. If
+none of the requested songs could be found, the program will notify you and quit.
 
 
 HOW IT WORKS:
