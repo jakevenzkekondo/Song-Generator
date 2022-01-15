@@ -45,7 +45,11 @@ def make_graph(words):
 
 def compose(g, words, length):
     composition = []
-    curr_word = g.get_vertex(random.choice(words))
+    try:
+        curr_word = g.get_vertex(random.choice(words))
+    except IndexError:
+        print("No lyrics to generate song from")
+        exit()
 
     # we don't want the initial seed word to be the last lyric or a newline
     while len(curr_word.neighbors) == 0 or curr_word == '\n':
