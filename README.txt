@@ -18,9 +18,9 @@ Our program makes use of the Genius Lyrics API to pull the lyrics of songs off o
 Once the user inputs the requested songs by an artist, those songs' lyrics are pulled from genius.com and
 written to text files in a newly created directory. 
 
-Then a graph is created, with each unique word in all
-of the lyrics as a vertex. Each vertex points to other vertices that represent unique words that immediately
-follow that word. The weights of the edges are how many times that word follows the other word.
+Then a graph is created, with each unique word in all of the lyrics as a vertex. Each vertex points to other
+vertices that represent unique words that immediately follow that word. The weights of the edges are how many
+times that word follows the other word.
 
 The song is generated via a Markov chain. First a initial word vertex is selected from the graph. The next word
 in the generated song is one of the words that vertex points to, and the likelihood of the vertex being chosen
