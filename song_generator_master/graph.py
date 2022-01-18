@@ -31,9 +31,6 @@ class Vertex(object):
     def next_word(self):
         # chooses randomly based on weights
         # will want to change
-        print(self.word)
-        print(len(self.neighbors))
-        print(len(self.neighbors_weights))
         return random.choices(self.neighbors, weights=self.neighbors_weights)[0]
 
 
